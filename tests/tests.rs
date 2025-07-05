@@ -1158,10 +1158,7 @@ fn test_pvq_api_works() {
             );
             let result: Vec<u8> =
                 Runtime::execute_query(program.to_vec(), args, None).expect("Ok result");
-            assert_eq!(
-                Option::<Balance>::decode(&mut &result[..]).expect("Decodes successfully"),
-                Some(5 * UNITS)
-            );
+            assert_eq!(result, Some(5 * UNITS).encode());
 
             // test quote_price_tokens_for_exact_tokens
             let mut args = vec![1u8];
@@ -1176,10 +1173,7 @@ fn test_pvq_api_works() {
             );
             let result: Vec<u8> =
                 Runtime::execute_query(program.to_vec(), args, None).expect("Ok result");
-            assert_eq!(
-                Option::<Balance>::decode(&mut &result[..]).expect("Decodes successfully"),
-                Some(10 * UNITS)
-            );
+            assert_eq!(result, Some(10 * UNITS).encode());
 
             // test get_liquidity_pool
             let mut args = vec![2u8];
@@ -1188,13 +1182,7 @@ fn test_pvq_api_works() {
             let result: Vec<u8> =
                 Runtime::execute_query(program.to_vec(), args, None).expect("Ok result");
 
-            let (native_reserve, asset1_reserve) =
-                Option::<(Balance, Balance)>::decode(&mut &result[..])
-                    .expect("Decodes successfully")
-                    .expect("Pool exists");
-
-            assert_eq!(native_reserve, native_liquidity);
-            assert_eq!(asset1_reserve, asset_1_liquidity);
+            assert_eq!(result, Some((native_liquidity, asset_1_liquidity)).encode());
         });
 }
 
