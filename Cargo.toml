@@ -106,12 +106,12 @@ xcm-builder = { version = "20.1.1", default-features = false, package = "staging
 xcm-executor = { version = "19.1.2", default-features = false, package = "staging-xcm-executor" }
 xcm-runtime-apis = { version = "0.7.1", default-features = false }
 xcm = { version = "16.2.0", default-features = false, package = "staging-xcm" }
-pvq-extension = { git = "https://github.com/open-web3-stack/PVQ", branch = "deps-stable2503-6", default-features = false }
-pvq-primitives = { git = "https://github.com/open-web3-stack/PVQ", branch = "deps-stable2503-6", default-features = false }
-pvq-runtime-api = { git = "https://github.com/open-web3-stack/PVQ", branch = "deps-stable2503-6", default-features = false }
-pvq-extension-core = { git = "https://github.com/open-web3-stack/PVQ", branch = "deps-stable2503-6", default-features = false }
-pvq-extension-fungibles = { git = "https://github.com/open-web3-stack/PVQ", branch = "deps-stable2503-6", default-features = false }
-pvq-extension-swap = { git = "https://github.com/open-web3-stack/PVQ", branch = "deps-stable2503-6", default-features = false }
+pvq-extension = { git = "https://github.com/open-web3-stack/PVQ", branch = "master", default-features = false }
+pvq-primitives = { git = "https://github.com/open-web3-stack/PVQ", branch = "master", default-features = false }
+pvq-runtime-api = { git = "https://github.com/open-web3-stack/PVQ", branch = "master", default-features = false }
+pvq-extension-core = { git = "https://github.com/open-web3-stack/PVQ", branch = "master", default-features = false }
+pvq-extension-fungibles = { git = "https://github.com/open-web3-stack/PVQ", branch = "master", default-features = false }
+pvq-extension-swap = { git = "https://github.com/open-web3-stack/PVQ", branch = "master", default-features = false }
 
 [dev-dependencies]
 asset-test-utils = { version = "23.0.0" }
