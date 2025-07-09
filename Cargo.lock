@@ -5386,13 +5386,13 @@ dependencies = [
 [[package]]
 name = "polkavm"
 version = "0.21.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
  "libc",
  "log",
- "polkavm-assembler 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6)",
- "polkavm-common 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6)",
- "polkavm-linux-raw 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6)",
+ "polkavm-assembler 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=master)",
+ "polkavm-common 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=master)",
+ "polkavm-linux-raw 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=master)",
 ]
 
 [[package]]
@@ -5416,7 +5416,7 @@ dependencies = [
 [[package]]
 name = "polkavm-assembler"
 version = "0.21.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
  "log",
 ]
@@ -5445,10 +5445,10 @@ dependencies = [
 [[package]]
 name = "polkavm-common"
 version = "0.21.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
  "log",
- "polkavm-assembler 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6)",
+ "polkavm-assembler 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=master)",
 ]
 
 [[package]]
@@ -5560,7 +5560,7 @@ checksum = "be6cd1d48c5e7814d287a3e12a339386a5dfa2f3ac72f932335f4cf56467f1b3"
 [[package]]
 name = "polkavm-linux-raw"
 version = "0.21.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 
 [[package]]
 name = "poly1305"
@@ -5740,33 +5740,35 @@ dependencies = [
 [[package]]
 name = "pvq-executor"
 version = "0.1.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
- "polkavm 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6)",
+ "polkavm 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=master)",
  "pvq-primitives",
+ "thiserror 2.0.12",
  "tracing",
 ]
 
 [[package]]
 name = "pvq-extension"
 version = "0.1.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
  "fortuples",
  "parity-scale-codec",
- "polkavm 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6)",
+ "polkavm 0.21.0 (git+https://github.com/open-web3-stack/PVQ?branch=master)",
  "pvq-executor",
  "pvq-extension-procedural",
  "pvq-primitives",
  "scale-info",
  "serde",
+ "thiserror 2.0.12",
  "tracing",
 ]
 
 [[package]]
 name = "pvq-extension-core"
 version = "0.1.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
  "parity-scale-codec",
  "pvq-extension",
@@ -5776,7 +5778,7 @@ dependencies = [
 [[package]]
 name = "pvq-extension-fungibles"
 version = "0.1.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
  "parity-scale-codec",
  "pvq-extension",
@@ -5786,7 +5788,7 @@ dependencies = [
 [[package]]
 name = "pvq-extension-procedural"
 version = "0.1.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -5798,7 +5800,7 @@ dependencies = [
 [[package]]
 name = "pvq-extension-swap"
 version = "0.1.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
  "parity-scale-codec",
  "pvq-extension",
@@ -5808,7 +5810,7 @@ dependencies = [
 [[package]]
 name = "pvq-primitives"
 version = "0.1.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
  "parity-scale-codec",
  "scale-info",
@@ -5817,7 +5819,7 @@ dependencies = [
 [[package]]
 name = "pvq-runtime-api"
 version = "0.1.0"
-source = "git+https://github.com/open-web3-stack/PVQ?branch=deps-stable2503-6#e75683188465ce61d1fceb95b05046ab451cb9e0"
+source = "git+https://github.com/open-web3-stack/PVQ?branch=master#0ac96e94ebbeffa1a7fc9ec942c37e93b7e0b534"
 dependencies = [
  "pvq-primitives",
  "sp-api",
