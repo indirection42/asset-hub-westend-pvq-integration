@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-release:
+    name: Build Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install WASM target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Cache cargo
+        uses: swatinem/rust-cache@v2
+
+      - name: Build release runtime
+        run: cargo build --release
+
+      - name: Collect WASM artifacts
+        run: |
+          mkdir -p artifacts
+          find target/release/wbuild -name "*.wasm" -exec cp {} artifacts/ \;
+          ls -la artifacts/
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload WASM Runtime
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/
+          asset_name: runtime-wasm-${{ github.ref_name }}.zip
+          asset_content_type: application/zip
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
