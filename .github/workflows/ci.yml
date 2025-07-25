@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Cache cargo
+        uses: swatinem/rust-cache@v2
+
+      - name: Run cargo check
+        run: cargo check
+
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Cache cargo
+        uses: swatinem/rust-cache@v2
+
+      - name: Run cargo test
+        run: cargo test
+
+  lints:
+    name: Lints
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install rustfmt and clippy
+        run: rustup component add rustfmt clippy
+
+      - name: Cache cargo
+        uses: swatinem/rust-cache@v2
+
+      - name: Run cargo fmt
+        run: cargo fmt --all -- --check
+
+      - name: Run cargo clippy
+        run: cargo clippy --all-features -- -D warnings
+
+  build:
+    name: Build Runtime
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install WASM target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Cache cargo
+        uses: swatinem/rust-cache@v2
+
+      - name: Build runtime (std)
+        run: cargo build --release
+
+  build-benchmarks:
+    name: Build with Benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install WASM target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Cache cargo
+        uses: swatinem/rust-cache@v2
+
+      - name: Build with runtime-benchmarks
+        run: cargo build --release --features runtime-benchmarks
+
+  build-try-runtime:
+    name: Build with Try-Runtime
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install WASM target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Cache cargo
+        uses: swatinem/rust-cache@v2
+
+      - name: Build with try-runtime
+        run: cargo build --release --features try-runtime
+
+  security_audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+
+      - name: Run cargo audit
+        run: cargo audit 
