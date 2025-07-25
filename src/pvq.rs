@@ -1,8 +1,19 @@
+use codec::{Decode, Encode};
 use pvq_extension::{extensions_impl, metadata::Metadata, ExtensionsExecutor, InvokeSource};
+use scale_info::TypeInfo;
+
+#[derive(Debug, Clone, PartialEq, Eq, Encode, Decode, TypeInfo)]
+pub struct AssetInfo {
+    pub asset_id: crate::Vec<u8>,
+    pub name: crate::Vec<u8>,
+    pub symbol: crate::Vec<u8>,
+    pub decimals: u8,
+}
 
 #[extensions_impl]
 pub mod extensions {
     use codec::Encode;
+
     #[extensions_impl::impl_struct]
     pub struct ExtensionImpl;
 
@@ -10,6 +21,7 @@ pub mod extensions {
     impl pvq_extension_swap::extension::ExtensionSwap for ExtensionImpl {
         type AssetId = crate::Vec<u8>;
         type Balance = crate::Balance;
+        type AssetInfo = super::AssetInfo;
         fn quote_price_tokens_for_exact_tokens(
             asset1: Self::AssetId,
             asset2: Self::AssetId,
@@ -60,22 +72,33 @@ pub mod extensions {
             None
         }
 
-        fn list_pools() -> scale_info::prelude::vec::Vec<(
-            Self::AssetId,
-            Self::AssetId,
-            Self::Balance,
-            Self::Balance,
-        )> {
-            let pools = pallet_asset_conversion::Pools::<crate::Runtime>::iter_keys()
+        fn list_pools() -> scale_info::prelude::vec::Vec<(Self::AssetId, Self::AssetId)> {
+            pallet_asset_conversion::Pools::<crate::Runtime>::iter_keys()
                 .map(|pool_id| {
                     let (asset1, asset2) = pool_id;
-                    let (balance1, balance2) =
-                        crate::AssetConversion::get_reserves(asset1.clone(), asset2.clone())
-                            .expect("Pool should exist");
-                    (asset1.encode(), asset2.encode(), balance1, balance2)
+                    (asset1.encode(), asset2.encode())
                 })
-                .collect();
-            pools
+                .collect()
+        }
+
+        fn asset_info(asset_id: Self::AssetId) -> Option<Self::AssetInfo> {
+            if let Ok(asset_id_decoded) =
+                <xcm::v5::Location as codec::Decode>::decode(&mut &asset_id[..])
+            {
+                match pallet_assets::Metadata::<crate::Runtime, pallet_assets::Instance2>::try_get(
+                    &asset_id_decoded,
+                ) {
+                    Ok(metadata) => Some(super::AssetInfo {
+                        asset_id: asset_id_decoded.encode(),
+                        name: metadata.name.into_inner(),
+                        symbol: metadata.symbol.into_inner(),
+                        decimals: metadata.decimals,
+                    }),
+                    Err(_) => None,
+                }
+            } else {
+                None
+            }
         }
     }
 }
