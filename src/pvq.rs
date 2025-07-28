@@ -82,20 +82,77 @@ pub mod extensions {
         }
 
         fn asset_info(asset_id: Self::AssetId) -> Option<Self::AssetInfo> {
+            use frame_support::traits::fungibles::Inspect;
+
             if let Ok(asset_id_decoded) =
                 <xcm::v5::Location as codec::Decode>::decode(&mut &asset_id[..])
             {
-                match pallet_assets::Metadata::<crate::Runtime, pallet_assets::Instance2>::try_get(
-                    &asset_id_decoded,
-                ) {
-                    Ok(metadata) => Some(super::AssetInfo {
+                // First check if the asset exists in our unified assets system
+                if !crate::NativeAndNonPoolAssets::asset_exists(asset_id_decoded.clone()) {
+                    return None;
+                }
+
+                // Check if it's the native token
+                if asset_id_decoded == crate::xcm_config::WestendLocation::get() {
+                    return Some(super::AssetInfo {
+                        asset_id: asset_id_decoded.encode(),
+                        name: b"Westend".to_vec(),
+                        symbol: b"WND".to_vec(),
+                        decimals: 12,
+                    });
+                }
+
+                // Check trust-backed assets - manual location parsing (known to work)
+                if asset_id_decoded.parents == 0 && asset_id_decoded.interior.len() == 2 {
+                    if let (Some(pallet_junction), Some(index_junction)) = (
+                        asset_id_decoded.interior.first(),
+                        asset_id_decoded.interior.last(),
+                    ) {
+                        if let (
+                            xcm::v5::Junction::PalletInstance(pallet_instance),
+                            xcm::v5::Junction::GeneralIndex(asset_index),
+                        ) = (pallet_junction, index_junction)
+                        {
+                            // Check if this is the trust-backed assets pallet (instance 50)
+                            if *pallet_instance
+                                == <crate::Assets as frame_support::traits::PalletInfoAccess>::index(
+                                ) as u8
+                            {
+                                let trust_backed_asset_id: crate::AssetIdForTrustBackedAssets =
+                                    (*asset_index).try_into().ok()?;
+                                if let Ok(metadata) = pallet_assets::Metadata::<
+                                    crate::Runtime,
+                                    crate::TrustBackedAssetsInstance,
+                                >::try_get(
+                                    &trust_backed_asset_id
+                                ) {
+                                    return Some(super::AssetInfo {
+                                        asset_id: asset_id_decoded.encode(),
+                                        name: metadata.name.into_inner(),
+                                        symbol: metadata.symbol.into_inner(),
+                                        decimals: metadata.decimals,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Try foreign assets
+                if let Ok(metadata) = pallet_assets::Metadata::<
+                    crate::Runtime,
+                    crate::ForeignAssetsInstance,
+                >::try_get(&asset_id_decoded)
+                {
+                    return Some(super::AssetInfo {
                         asset_id: asset_id_decoded.encode(),
                         name: metadata.name.into_inner(),
                         symbol: metadata.symbol.into_inner(),
                         decimals: metadata.decimals,
-                    }),
-                    Err(_) => None,
+                    });
                 }
+
+                None
             } else {
                 None
             }
