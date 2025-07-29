@@ -12,6 +12,7 @@ pub struct AssetInfo {
 
 #[extensions_impl]
 pub mod extensions {
+    use alloc::collections::btree_map::BTreeMap;
     use codec::Encode;
 
     #[extensions_impl::impl_struct]
@@ -156,6 +157,66 @@ pub mod extensions {
             } else {
                 None
             }
+        }
+
+        fn assets_info() -> BTreeMap<Self::AssetId, Self::AssetInfo> {
+            let mut all_assets = BTreeMap::new();
+
+            // Add native token (WND) - this is handled by the Balances side of NativeAndNonPoolAssets
+            let native_location = crate::xcm_config::WestendLocation::get();
+            all_assets.insert(
+                native_location.encode(),
+                super::AssetInfo {
+                    asset_id: native_location.encode(),
+                    name: b"Westend".to_vec(),
+                    symbol: b"WND".to_vec(),
+                    decimals: 12,
+                },
+            );
+
+            // Add trust-backed assets - these are part of LocalAndForeignAssets side of NativeAndNonPoolAssets
+            for (asset_id, metadata) in
+                pallet_assets::Metadata::<crate::Runtime, crate::TrustBackedAssetsInstance>::iter()
+            {
+                // Convert trust-backed asset ID to location using the same format as the union type expects
+                let asset_location = xcm::v5::Location::new(
+                    0,
+                    [
+                        xcm::v5::Junction::PalletInstance(
+                            <crate::Assets as frame_support::traits::PalletInfoAccess>::index()
+                                as u8,
+                        ),
+                        xcm::v5::Junction::GeneralIndex(asset_id.into()),
+                    ],
+                );
+
+                all_assets.insert(
+                    asset_location.encode(),
+                    super::AssetInfo {
+                        asset_id: asset_location.encode(),
+                        name: metadata.name.into_inner(),
+                        symbol: metadata.symbol.into_inner(),
+                        decimals: metadata.decimals,
+                    },
+                );
+            }
+
+            // Add foreign assets - these are also part of LocalAndForeignAssets side of NativeAndNonPoolAssets
+            for (asset_id, metadata) in
+                pallet_assets::Metadata::<crate::Runtime, crate::ForeignAssetsInstance>::iter()
+            {
+                all_assets.insert(
+                    asset_id.encode(),
+                    super::AssetInfo {
+                        asset_id: asset_id.encode(),
+                        name: metadata.name.into_inner(),
+                        symbol: metadata.symbol.into_inner(),
+                        decimals: metadata.decimals,
+                    },
+                );
+            }
+
+            all_assets
         }
     }
 }
